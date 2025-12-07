@@ -6,7 +6,7 @@ in Tile mode for detail enhancement while preserving structure.
 """
 
 import logging
-from typing import Optional
+from typing import Optional, List
 from PIL import Image
 import torch
 
@@ -204,12 +204,12 @@ class SDEnhancer:
     
     def enhance_texture_batch(
         self,
-        texture_images: list[Image.Image],
+        texture_images: List[Image.Image],
         prompt: str = "highly detailed texture, sharp details, 8k quality",
         negative_prompt: str = "blurry, smooth, low quality, artifacts",
         steps: int = 20,
         conditioning_scale: float = 0.7,
-    ) -> list[Image.Image]:
+    ) -> List[Image.Image]:
         """
         Enhance multiple textures in batch.
         
