@@ -32,6 +32,7 @@ class GeometryOptimizer:
         self,
         enable_subdivision: bool = False,
         subdivision_iterations: int = 1,
+        subdivision_threshold: float = 1.0,
         enable_smoothing: bool = False,
         smoothing_steps: int = 1
     ):
@@ -41,11 +42,13 @@ class GeometryOptimizer:
         Args:
             enable_subdivision: Enable subdivision (default: False)
             subdivision_iterations: Number of subdivision iterations (default: 1)
+            subdivision_threshold: Threshold for subdivision 0.0-1.0 (default: 1.0)
             enable_smoothing: Enable light smoothing (default: False)
             smoothing_steps: Number of smoothing steps (default: 1)
         """
         self.enable_subdivision = enable_subdivision
         self.subdivision_iterations = subdivision_iterations
+        self.subdivision_threshold = subdivision_threshold
         self.enable_smoothing = enable_smoothing
         self.smoothing_steps = smoothing_steps
         
@@ -116,8 +119,10 @@ class GeometryOptimizer:
         
         for i in range(self.subdivision_iterations):
             try:
-                # Use midpoint subdivision for conservative approach
-                ms.meshing_surface_subdivision_midpoint(threshold=pymeshlab.PercentageValue(1.0))
+                # Use midpoint subdivision with configurable threshold
+                ms.meshing_surface_subdivision_midpoint(
+                    threshold=pymeshlab.PercentageValue(self.subdivision_threshold)
+                )
                 logger.info(f"Subdivision iteration {i+1}/{self.subdivision_iterations} complete")
             except Exception as e:
                 logger.warning(f"Subdivision iteration {i+1} failed: {e}")

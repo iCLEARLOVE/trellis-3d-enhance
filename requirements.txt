@@ -7,9 +7,9 @@ pyyaml>=6.0
 tqdm>=4.65.0
 requests>=2.31.0
 
-# Deep learning - PyTorch
-torch>=2.0.0
-torchvision>=0.15.0
+# PyTorch - Install via setup.sh for proper CUDA support
+# torch>=2.0.0
+# torchvision>=0.15.0
 
 # Real-ESRGAN for texture enhancement
 realesrgan>=0.3.0

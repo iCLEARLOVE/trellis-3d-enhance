@@ -159,7 +159,8 @@ def enhance_model(
             texture_enhancer = TextureEnhancer(
                 scale=texture_scale,
                 tile_size=texture_config.get('tile_size', 1024),
-                use_fp16=texture_config.get('use_fp16', True)
+                use_fp16=texture_config.get('use_fp16', True),
+                weights_url=texture_config.get('weights_url')
             )
             
             # Enhance texture
@@ -189,6 +190,7 @@ def enhance_model(
             geometry_optimizer = GeometryOptimizer(
                 enable_subdivision=geometry_config.get('enable_subdivision', False),
                 subdivision_iterations=geometry_config.get('subdivision_iterations', 1),
+                subdivision_threshold=geometry_config.get('subdivision_threshold', 1.0),
                 enable_smoothing=geometry_config.get('enable_smoothing', False),
                 smoothing_steps=geometry_config.get('smoothing_steps', 1)
             )

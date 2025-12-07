@@ -6,11 +6,13 @@ texture:
   use_fp16: true                 # Use FP16 for faster processing on CUDA
   tile_size: 1024                # Tile size for processing (A6000 optimized)
   output_format: "png"           # png or jpg
+  weights_url: "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth"
 
 # Geometry Optimization Settings
 geometry:
   enable_subdivision: false      # Conservative by default (Trellis meshes are good)
   subdivision_iterations: 1      # Number of subdivision iterations
+  subdivision_threshold: 1.0     # Threshold for subdivision (0.0-1.0)
   enable_smoothing: false        # Light smoothing
   smoothing_steps: 1             # Number of smoothing steps
 
@@ -33,3 +35,4 @@ output:
 logging:
   level: "INFO"                  # DEBUG, INFO, WARNING, ERROR, CRITICAL
   log_file: "enhancement.log"   # Log file path (null to disable file logging)
+

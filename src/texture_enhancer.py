@@ -40,7 +40,8 @@ class TextureEnhancer:
         scale: int = 4,
         tile_size: int = 1024,
         use_fp16: bool = True,
-        device: Optional[str] = None
+        device: Optional[str] = None,
+        weights_url: Optional[str] = None
     ):
         """
         Initialize the TextureEnhancer.
@@ -50,6 +51,7 @@ class TextureEnhancer:
             tile_size: Tile size for processing (default: 1024 for A6000)
             use_fp16: Use FP16 precision for faster processing (default: True)
             device: Device to use ('cuda', 'mps', 'cpu', or None for auto-detect)
+            weights_url: URL to download weights from (if None, uses default)
         """
         self.scale = scale
         self.tile_size = tile_size
@@ -58,6 +60,7 @@ class TextureEnhancer:
         self.model = None
         self.weights_dir = Path("weights")
         self.weights_dir.mkdir(exist_ok=True)
+        self.weights_url = weights_url or "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth"
         
         logger.info(
             f"Initializing TextureEnhancer (scale={scale}, "
@@ -117,16 +120,15 @@ class TextureEnhancer:
         """
         Download Real-ESRGAN pretrained weights.
         
-        Downloads RealESRGAN_x4plus.pth from the official GitHub release.
+        Downloads RealESRGAN_x4plus.pth from the configured URL.
         
         Returns:
             Path to the downloaded weights file
         """
-        url = "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth"
         output_path = self.weights_dir / "RealESRGAN_x4plus.pth"
         
         logger.info("Downloading Real-ESRGAN weights...")
-        return download_file(url, str(output_path), desc="Downloading Real-ESRGAN weights")
+        return download_file(self.weights_url, str(output_path), desc="Downloading Real-ESRGAN weights")
     
     def enhance_texture(
         self,

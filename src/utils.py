@@ -79,7 +79,7 @@ def download_file(url: str, output_path: str, desc: str = "Downloading") -> str:
     logger.info(f"Downloading from {url} to {output_path}")
     
     try:
-        response = requests.get(url, stream=True, timeout=30)
+        response = requests.get(url, stream=True, timeout=120)  # Increased timeout for large files
         response.raise_for_status()
         
         total_size = int(response.headers.get('content-length', 0))
