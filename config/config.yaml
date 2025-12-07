@@ -1,0 +1,35 @@
+# Trellis 3D Model Enhancement Configuration
+
+# Texture Enhancement Settings
+texture:
+  upscale_factor: 4              # 2 or 4
+  use_fp16: true                 # Use FP16 for faster processing on CUDA
+  tile_size: 1024                # Tile size for processing (A6000 optimized)
+  output_format: "png"           # png or jpg
+
+# Geometry Optimization Settings
+geometry:
+  enable_subdivision: false      # Conservative by default (Trellis meshes are good)
+  subdivision_iterations: 1      # Number of subdivision iterations
+  enable_smoothing: false        # Light smoothing
+  smoothing_steps: 1             # Number of smoothing steps
+
+# Stable Diffusion Enhancement (Optional)
+sd_enhancement:
+  enable: false                  # Disabled by default (slower than Real-ESRGAN)
+  model: "lllyasviel/control_v11f1e_sd15_tile"
+  steps: 20                      # Number of diffusion steps
+  conditioning_scale: 0.7        # ControlNet conditioning scale (0.0-1.0)
+  prompt: "highly detailed texture, sharp details, 8k quality"
+  negative_prompt: "blurry, smooth, low quality, artifacts"
+
+# Output Settings
+output:
+  create_backup: true            # Backup original file before processing
+  save_intermediate: false       # Save intermediate results (texture, etc.)
+  compression: true              # Compress output files
+
+# Logging Settings
+logging:
+  level: "INFO"                  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  log_file: "enhancement.log"   # Log file path (null to disable file logging)
