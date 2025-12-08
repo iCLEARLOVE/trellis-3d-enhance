@@ -285,6 +285,24 @@ Benchmarks on NVIDIA A6000 (48GB VRAM):
   pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118
   ```
 
+#### "basicsr installation failed" or "Failed to import Real-ESRGAN"
+- **Cause**: `basicsr` dependency has complex build requirements
+- **Solutions**:
+  1. **Use ISR as alternative** (recommended if basicsr fails):
+     ```bash
+     pip install ISR
+     ```
+     The tool will automatically use ISR if Real-ESRGAN is not available.
+  
+  2. **Install Real-ESRGAN with all dependencies**:
+     ```bash
+     pip install realesrgan basicsr facexlib gfpgan
+     ```
+  
+  3. **Use pre-built wheels** (if available for your platform)
+
+  Note: ISR provides good quality upscaling without the complex dependencies, though Real-ESRGAN may give slightly better results.
+
 #### "Out of memory" error
 - **Cause**: VRAM exceeded
 - **Solutions**:

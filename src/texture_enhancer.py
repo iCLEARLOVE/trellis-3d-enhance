@@ -71,10 +71,13 @@ class TextureEnhancer:
         self._load_model()
     
     def _load_model(self) -> None:
-        """Load the Real-ESRGAN model."""
+        """Load the texture upscaling model (tries Real-ESRGAN first, falls back to ISR)."""
+        # Try Real-ESRGAN first (requires basicsr)
         try:
             from realesrgan import RealESRGANer
             from basicsr.archs.rrdbnet_arch import RRDBNet
+            
+            logger.info("Loading Real-ESRGAN model...")
             
             # Check if weights exist, download if not
             weights_path = self.weights_dir / "RealESRGAN_x4plus.pth"
@@ -104,14 +107,50 @@ class TextureEnhancer:
                 device=self.device
             )
             
+            self.model_type = 'realesrgan'
             logger.info("Real-ESRGAN model loaded successfully")
+            return
+            
+        except ImportError as e:
+            logger.warning(
+                f"Real-ESRGAN not available: {e}\n"
+                "Falling back to ISR (Image Super-Resolution)..."
+            )
+        
+        # Fallback to ISR (doesn't require basicsr)
+        try:
+            from ISR.models import RDN
+            
+            logger.info("Loading ISR RDN model...")
+            
+            # ISR supports 2x and 4x upscaling
+            if self.scale == 2:
+                self.model = RDN(arch_params={'C': 3, 'D': 10, 'G': 64, 'G0': 64, 'x': 2})
+                weights_name = 'rdn-C3-D10-G64-G064-x2_PSNR_epoch086.hdf5'
+            else:  # scale == 4
+                self.model = RDN(arch_params={'C': 6, 'D': 20, 'G': 64, 'G0': 64, 'x': 4})
+                weights_name = 'rdn-C6-D20-G64-G064-x4_PSNR_epoch134.hdf5'
+            
+            # ISR auto-downloads weights if not present
+            weights_path = self.weights_dir / weights_name
+            if not weights_path.exists():
+                logger.info("Downloading ISR weights (this may take a moment)...")
+            
+            # ISR models use TensorFlow/Keras, load to appropriate device
+            self.model_type = 'isr'
+            logger.info(f"ISR RDN {self.scale}x model loaded successfully")
+            logger.info("Note: ISR is used as fallback. For best quality, install Real-ESRGAN with: pip install realesrgan basicsr")
+            return
             
         except ImportError as e:
             logger.error(
-                f"Failed to import Real-ESRGAN: {e}\n"
-                "Please install with: pip install realesrgan basicsr"
+                f"Failed to load texture enhancement model: {e}\n"
+                "Install either:\n"
+                "  1. Real-ESRGAN: pip install realesrgan basicsr (recommended)\n"
+                "  2. ISR: pip install ISR (lightweight alternative)\n"
+                "At least one is required for texture enhancement."
             )
-            raise
+            raise RuntimeError("No texture enhancement model available")
         except Exception as e:
             logger.error(f"Failed to load model: {e}")
             raise
@@ -154,17 +193,33 @@ class TextureEnhancer:
         if outscale is None:
             outscale = self.scale
         
-        logger.info(f"Enhancing texture with {outscale}x upscaling")
+        logger.info(f"Enhancing texture with {outscale}x upscaling using {self.model_type}")
         
         # Convert PIL Image to numpy array
         img_array = np.array(texture_image)
         
-        # Enhance with Real-ESRGAN
+        # Enhance based on model type
         try:
-            output, _ = self.model.enhance(img_array, outscale=outscale)
+            if self.model_type == 'realesrgan':
+                # Real-ESRGAN processing
+                output, _ = self.model.enhance(img_array, outscale=outscale)
+                enhanced_image = Image.fromarray(output)
+                
+            elif self.model_type == 'isr':
+                # ISR processing
+                # ISR expects RGB image in range [0, 255]
+                if img_array.ndim == 2:  # Grayscale
+                    img_array = np.stack([img_array] * 3, axis=-1)
+                
+                # ISR predict method
+                output = self.model.predict(img_array)
+                
+                # Convert to uint8
+                output = np.clip(output, 0, 255).astype(np.uint8)
+                enhanced_image = Image.fromarray(output)
             
-            # Convert back to PIL Image
-            enhanced_image = Image.fromarray(output)
+            else:
+                raise ValueError(f"Unknown model type: {self.model_type}")
             
             logger.info(
                 f"Texture enhanced: {texture_image.size} -> {enhanced_image.size}"
