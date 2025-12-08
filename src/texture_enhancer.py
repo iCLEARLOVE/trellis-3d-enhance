@@ -189,7 +189,7 @@ class TextureEnhancer:
         using Real-ESRGAN, and saves the model with enhanced textures.
         
         Args:
-            input_path: Path to input 3D model (.glb or .obj)
+            input_path: Path to input 3D model (.glb, .obj, or .ply)
             output_dir: Directory where enhanced model will be saved
             upscale_factor: Upscaling factor (if None, uses self.scale)
             save_texture: Whether to also save the enhanced texture separately
@@ -215,8 +215,8 @@ class TextureEnhancer:
             raise FileNotFoundError(f"Input file not found: {input_path}")
         
         ext = input_path.suffix.lower()
-        if ext not in ['.glb', '.obj']:
-            raise ValueError(f"Unsupported file format: {ext}")
+        if ext not in ['.glb', '.obj', '.ply']:
+            raise ValueError(f"Unsupported file format: {ext}. Supported formats: .glb, .obj, .ply")
         
         # Extract texture from mesh
         logger.info("Extracting texture from mesh...")

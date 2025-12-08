@@ -81,7 +81,7 @@ def enhance_model(
     
     # Validate input file
     try:
-        validate_file(str(input_path), allowed_extensions=['.glb', '.obj'])
+        validate_file(str(input_path), allowed_extensions=['.glb', '.obj', '.ply'])
     except Exception as e:
         logger.error(f"Input validation failed: {e}")
         raise
@@ -253,7 +253,7 @@ Examples:
         '--input', '-i',
         type=str,
         required=True,
-        help='Path to input 3D model (.glb or .obj)'
+        help='Path to input 3D model (.glb, .obj, or .ply)'
     )
     
     parser.add_argument(

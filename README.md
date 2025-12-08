@@ -252,8 +252,8 @@ See [config/config.yaml](config/config.yaml) for full configuration options.
 
 ## 🎯 Supported Formats
 
-- **Input**: `.glb`, `.obj`
-- **Output**: `.glb`, `.obj` (same as input)
+- **Input**: `.glb`, `.obj`, `.ply`
+- **Output**: `.glb`, `.obj`, `.ply` (same as input)
 - **Textures**: `.png`, `.jpg`
 
 ## 📊 Performance
