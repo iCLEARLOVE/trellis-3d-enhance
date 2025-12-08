@@ -138,15 +138,23 @@ echo "=========================================="
 echo ""
 echo "Current setup uses Real-ESRGAN (best quality, recommended for Python 3.10+ and CUDA 12.x)"
 echo ""
-read -p "Do you want to use ISR instead? (only for Python 3.7-3.9) [y/N]: " -n 1 -r
-echo ""
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-    echo "⚠ Warning: ISR requires TensorFlow 2.0.0, which is incompatible with Python 3.10+"
-    echo "Installing ISR..."
-    pip install ISR==2.2.0
-    echo "✓ ISR installed"
+
+# Check if Python version is compatible with ISR (3.7-3.9)
+if python3 -c "import sys; exit(0 if sys.version_info >= (3, 10) else 1)"; then
+    echo "⚠ Python 3.10+ detected - ISR is not compatible"
+    echo "✓ Using Real-ESRGAN (already installed)"
 else
-    echo "Using Real-ESRGAN (already installed)"
+    # Python 3.7-3.9, ISR is an option
+    read -p "Do you want to use ISR instead? (only for Python 3.7-3.9) [y/N]: " -n 1 -r
+    echo ""
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        echo "⚠ Warning: ISR requires TensorFlow 2.0.0, which is incompatible with Python 3.10+"
+        echo "Installing ISR..."
+        pip install ISR==2.2.0
+        echo "✓ ISR installed"
+    else
+        echo "Using Real-ESRGAN (already installed)"
+    fi
 fi
 
 echo ""
