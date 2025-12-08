@@ -1,0 +1,30 @@
+# Core dependencies for 3D mesh processing
+pymeshlab>=2022.2
+trimesh>=4.0.0
+pillow>=10.0.0
+numpy>=1.24.0,<2.0
+pyyaml>=6.0
+tqdm>=4.65.0
+requests>=2.31.0
+
+# PyTorch - Install separately for CUDA support
+# torch>=2.0.0
+# torchvision>=0.15.0
+
+# Real-ESRGAN for texture enhancement (install from GitHub for compatibility)
+# Install with: pip install git+https://github.com/XPixelGroup/BasicSR.git
+# Install with: pip install git+https://github.com/xinntao/Real-ESRGAN.git
+# Install with: pip install git+https://github.com/TencentARC/GFPGAN.git
+facexlib>=0.3.0
+
+# Optional: Stable Diffusion enhancement
+# Uncomment to enable SD enhancement features
+# diffusers>=0.21.0
+# transformers>=4.30.0
+# accelerate>=0.20.0
+
+# Additional mesh processing dependencies
+networkx>=3.0
+scipy>=1.10.0
+lmdb>=1.4.0
+filterpy>=1.4.5
