@@ -18,6 +18,10 @@ from .utils import download_file, extract_texture_from_mesh, apply_texture_to_me
 
 logger = logging.getLogger(__name__)
 
+# Installation commands for texture enhancement backends
+REALESRGAN_INSTALL_CMD = "pip install realesrgan==0.3.0 basicsr==1.4.2 facexlib==0.3.0 gfpgan==1.3.8"
+ISR_INSTALL_CMD = "pip install ISR==2.2.0"
+
 
 class TextureEnhancer:
     """
@@ -139,15 +143,16 @@ class TextureEnhancer:
             # ISR models use TensorFlow/Keras, load to appropriate device
             self.model_type = 'isr'
             logger.info(f"ISR RDN {self.scale}x model loaded successfully")
-            logger.info("Note: ISR is used as fallback. For best quality, install Real-ESRGAN with: pip install realesrgan basicsr")
+            logger.info(f"Note: ISR is a fallback option. For best quality with Python 3.10+, install Real-ESRGAN with: {REALESRGAN_INSTALL_CMD}")
+            logger.warning("Warning: ISR requires TensorFlow 2.0.0 and may not work with Python 3.10+")
             return
             
         except ImportError as e:
             logger.error(
                 f"Failed to load texture enhancement model: {e}\n"
                 "Install either:\n"
-                "  1. Real-ESRGAN: pip install realesrgan basicsr (recommended)\n"
-                "  2. ISR: pip install ISR (lightweight alternative)\n"
+                f"  1. Real-ESRGAN (RECOMMENDED for Python 3.10+): {REALESRGAN_INSTALL_CMD}\n"
+                f"  2. ISR (only for Python 3.7-3.9): {ISR_INSTALL_CMD}\n"
                 "At least one is required for texture enhancement."
             )
             raise RuntimeError("No texture enhancement model available")
