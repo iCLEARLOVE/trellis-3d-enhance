@@ -73,33 +73,36 @@ mkdir -p weights output logs
 
 Choose one of the following backends:
 
-### Option 1: ISR (Recommended for Easy Setup)
-
-**Pros:**
-- ✅ Easy to install, no complex dependencies
-- ✅ Works out of the box
-- ✅ Good quality results
-
-**Installation:**
-```bash
-pip install ISR==2.2.0
-```
-
-This is the default in `requirements.txt`.
-
-### Option 2: Real-ESRGAN (Best Quality)
+### Option 1: Real-ESRGAN (Recommended for Python 3.10+ and CUDA 12.x)
 
 **Pros:**
 - ✅ Best quality results
 - ✅ Industry-standard upscaling
-
-**Cons:**
-- ⚠️ More complex dependencies (basicsr)
-- ⚠️ May have installation issues on some systems
+- ✅ Compatible with Python 3.10+ and CUDA 12.x
+- ✅ Works with PyTorch (better modern GPU support)
 
 **Installation:**
 ```bash
 pip install realesrgan==0.3.0 basicsr==1.4.2 facexlib==0.3.0 gfpgan==1.3.8
+```
+
+This is now the default in `requirements.txt` for Python 3.10+ environments.
+
+### Option 2: ISR (Only for Python 3.7-3.9)
+
+**Pros:**
+- ✅ Easy to install (when compatible)
+- ✅ Good quality results
+
+**Cons:**
+- ⚠️ Requires TensorFlow 2.0.0, which is incompatible with Python 3.10+
+- ⚠️ Only works with older CUDA versions (CUDA 10.x)
+- ⚠️ Not recommended for modern environments
+
+**Installation:**
+```bash
+# Only use with Python 3.7-3.9
+pip install ISR==2.2.0
 ```
 
 **Note:** The tool automatically detects which backend is available and uses it.
@@ -158,13 +161,13 @@ Compatible versions tested for Python 3.10 with CUDA 12.1:
 | Package | Version | Notes |
 |---------|---------|-------|
 | Python | 3.10, 3.11, 3.12 | 3.10+ recommended |
-| CUDA | 11.8, 12.1, 12.4 | 12.1+ recommended |
+| CUDA | 11.8, 12.1, 12.4, 12.8 | 12.1+ recommended |
 | PyTorch | 2.0.0 - 2.2.0 | Auto-installed |
 | pymeshlab | 2022.2.post4 | Mesh processing |
 | trimesh | 4.0.10 | 3D format support |
 | numpy | 1.24.0 - 1.26.4 | <2.0 for compatibility |
-| ISR | 2.2.0 | Default backend |
-| Real-ESRGAN | 0.3.0 | Optional backend |
+| Real-ESRGAN | 0.3.0 | Default backend (Python 3.10+) |
+| ISR | 2.2.0 | Legacy backend (Python 3.7-3.9 only) |
 
 ## Troubleshooting
 
@@ -190,10 +193,16 @@ pip install pymeshlab==2022.2.post4
 
 **Solution:**
 ```bash
-# Install TensorFlow (ISR dependency)
-pip install tensorflow>=2.10.0
+# ISR is incompatible with Python 3.10+ due to TensorFlow 2.0.0 requirement
+# Use Real-ESRGAN instead (now default in requirements.txt):
+pip install realesrgan==0.3.0 basicsr==1.4.2 facexlib==0.3.0 gfpgan==1.3.8
 
-# Retry ISR
+# The tool will automatically use Real-ESRGAN
+```
+
+For Python 3.7-3.9 users who want to use ISR:
+```bash
+# Only compatible with Python 3.7-3.9
 pip install ISR==2.2.0
 ```
 

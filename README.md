@@ -2,9 +2,9 @@
 
 > Enhance your Trellis-generated 3D models with AI-powered texture upscaling and geometry optimization.
 
-[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![CUDA](https://img.shields.io/badge/CUDA-11.8-green.svg)](https://developer.nvidia.com/cuda-toolkit)
+[![CUDA](https://img.shields.io/badge/CUDA-12.x-green.svg)](https://developer.nvidia.com/cuda-toolkit)
 
 Transform your Trellis 3D models into high-quality assets with AI-powered enhancement. This tool provides plug-and-play texture upscaling using Real-ESRGAN and intelligent geometry optimization using PyMeshLab—no training required.
 
@@ -44,8 +44,8 @@ python enhance.py --input your_model.glb --output enhanced/
 - **Storage**: 5GB for dependencies and model weights
 
 ### Software
-- **Python**: 3.8 or higher
-- **CUDA**: 11.8 or higher (for GPU acceleration)
+- **Python**: 3.10 or higher (3.10, 3.11, 3.12 recommended)
+- **CUDA**: 12.x recommended (11.8+ supported, including CUDA 12.8)
 - **OS**: Linux, macOS, or Windows with WSL
 
 ## 🚀 Installation
@@ -282,26 +282,43 @@ Benchmarks on NVIDIA A6000 (48GB VRAM):
 - **Cause**: CUDA not detected or PyTorch not installed with CUDA support
 - **Solution**: 
   ```bash
+  # For CUDA 12.x (including 12.8)
+  pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
+  
+  # For CUDA 11.8
   pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118
   ```
+
+#### "ISR installation failed" or "Could not find tensorflow==2.0.0"
+- **Cause**: ISR requires TensorFlow 2.0.0, which is incompatible with Python 3.10+
+- **Solution**: 
+  ```bash
+  # Use Real-ESRGAN instead (now default in requirements.txt)
+  pip install realesrgan==0.3.0 basicsr==1.4.2 facexlib==0.3.0 gfpgan==1.3.8
+  ```
+  Note: ISR only works with Python 3.7-3.9 and older CUDA versions.
 
 #### "basicsr installation failed" or "Failed to import Real-ESRGAN"
 - **Cause**: `basicsr` dependency has complex build requirements
 - **Solutions**:
-  1. **Use ISR as alternative** (recommended if basicsr fails):
+  1. **Install with all dependencies** (recommended for Python 3.10+):
      ```bash
-     pip install ISR
-     ```
-     The tool will automatically use ISR if Real-ESRGAN is not available.
-  
-  2. **Install Real-ESRGAN with all dependencies**:
-     ```bash
-     pip install realesrgan basicsr facexlib gfpgan
+     pip install realesrgan==0.3.0 basicsr==1.4.2 facexlib==0.3.0 gfpgan==1.3.8
      ```
   
-  3. **Use pre-built wheels** (if available for your platform)
+  2. **Use ISR as alternative** (only for Python 3.7-3.9):
+     ```bash
+     pip install ISR==2.2.0
+     ```
+     Note: ISR requires TensorFlow 2.0.0 and is incompatible with Python 3.10+
+   
+  3. **Install build dependencies** (Linux):
+     ```bash
+     sudo apt-get install build-essential python3-dev
+     pip install realesrgan==0.3.0 basicsr==1.4.2 facexlib==0.3.0 gfpgan==1.3.8
+     ```
 
-  Note: ISR provides good quality upscaling without the complex dependencies, though Real-ESRGAN may give slightly better results.
+  The tool will automatically use whichever backend is available.
 
 #### "Out of memory" error
 - **Cause**: VRAM exceeded

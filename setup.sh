@@ -136,16 +136,17 @@ echo "=========================================="
 echo "Texture Enhancement Backend"
 echo "=========================================="
 echo ""
-echo "Current setup uses ISR (lightweight, easy to install)"
+echo "Current setup uses Real-ESRGAN (best quality, recommended for Python 3.10+ and CUDA 12.x)"
 echo ""
-read -p "Do you want to install Real-ESRGAN instead? (better quality but more dependencies) [y/N]: " -n 1 -r
+read -p "Do you want to use ISR instead? (only for Python 3.7-3.9) [y/N]: " -n 1 -r
 echo ""
 if [[ $REPLY =~ ^[Yy]$ ]]; then
-    echo "Installing Real-ESRGAN and dependencies..."
-    pip install realesrgan==0.3.0 basicsr==1.4.2 facexlib==0.3.0 gfpgan==1.3.8
-    echo "✓ Real-ESRGAN installed"
+    echo "⚠ Warning: ISR requires TensorFlow 2.0.0, which is incompatible with Python 3.10+"
+    echo "Installing ISR..."
+    pip install ISR==2.2.0
+    echo "✓ ISR installed"
 else
-    echo "Using ISR (already installed)"
+    echo "Using Real-ESRGAN (already installed)"
 fi
 
 echo ""
